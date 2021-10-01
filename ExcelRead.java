@@ -1,42 +1,45 @@
-package Batch5;
+package CapGTest.CapGTestBatch2;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.testng.annotations.Parameters;
+import org.testng.annotations.Test;
 
-public class ExcelRead {
-
-public static void main(String[] args) throws IOException {
+public class ExcelRead extends BaseClass{
+	
+	@Test 
+	public void readData() throws IOException
+	{
+		//This is to identify the excel file
+		FileInputStream fis = new FileInputStream("E:\\Anand\\Automation\\AutomationData.xlsx");
 		
-		// To identify the excel file
-		FileInputStream fis = new FileInputStream("E:/Anand/Automation/AutomationData.xlsx");
+		//Workbook to identify the excel file
+		XSSFWorkbook workbook = new XSSFWorkbook(fis); //AutomationData.xlsx
+		XSSFSheet seleniumSheet = workbook.getSheetAt(0);//Selenium
+				
+		//get row and column count
+		int rowcount = seleniumSheet.getPhysicalNumberOfRows();//6th record as index starts from 0
+		int columncount = seleniumSheet.getRow(0).getPhysicalNumberOfCells();//no of columns
 		
-		//To identify the excel file and handle the sheets
-		XSSFWorkbook workbook = new XSSFWorkbook(fis);//AutomationData.xlsx file reference
-		XSSFSheet seleniumsheet = workbook.getSheetAt(0);//Selenium sheet which is 1st sheet in the work book
-		
-		//get the row and column
-		int rowcount = seleniumsheet.getPhysicalNumberOfRows();
-		int columncount = seleniumsheet.getRow(0).getPhysicalNumberOfCells();
-		
-		System.out.println(rowcount);
-		System.out.println(columncount);
-		
-		XSSFRow row = seleniumsheet.getRow(4);
-		XSSFCell cell = row.getCell(1); //cell refer to 5,1
-			
-		System.out.println(cell);
-		
-		cell.setCellValue("Batch-5 Oct 2021");		
-		FileOutputStream fos = new FileOutputStream("E:/Anand/Automation/AutomationData.xlsx");
-		workbook.write(fos);
+		for(int i=0;i<rowcount;i++) //row 
+		{
+			for(int j=0;j<columncount;j++) //column
+			{
+				String data = seleniumSheet.getRow(i).getCell(j).getStringCellValue();
+				System.out.print(data+"  ");
+			}
+			System.out.println();
+		}
 		
 	}
-
-
 }
