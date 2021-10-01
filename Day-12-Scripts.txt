@@ -1,0 +1,150 @@
+Assignment 
+-----------
+https://rahulshettyacademy.com/AutomationPractice/
+1. Create a new png image uniquely. So that existing image will not override
+2. Click all the radio buttons within the for loop
+3. Identify the checkboxes and click
+
+BaseClass
+------------
+package SeleniumScripts;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class BaseClass {
+
+	static String browser="Firefox";
+	static WebDriver driver=null;
+
+	static void invokeBrowser()
+	{
+		if(browser.equalsIgnoreCase("Chrome")) //condition
+		{	
+			//Invoke the browser
+			System.setProperty("webdriver.chrome.driver", "C:\\drivers\\chromedriver_93\\chromedriver.exe");
+			driver = new ChromeDriver();//upcasting	
+		}
+		else if(browser.equalsIgnoreCase("firefox"))
+		{
+			System.setProperty("webdriver.gecko.driver", "C:\\drivers\\geckodriver-v0.29.0-win64\\geckodriver.exe");
+			driver = new FirefoxDriver();//upcasting
+		}		
+		//maximize the browser
+		driver.manage().window().maximize();
+	}
+	
+	static void closeBrowser() throws InterruptedException
+	{
+		Thread.sleep(3000);
+		driver.close();
+	}
+}
+-----------------print screen-------
+	//Type Casting
+		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE); 
+		Files.copy(src, new File("./screenshot/salesforce-result.png"));
+----------QAClick-------------
+package SeleniumScripts;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
+
+public class QAClickDemo extends BaseClass{
+
+	public static void main(String[] args) throws InterruptedException {
+		// invoke the browser
+		invokeBrowser();
+		//wait
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		
+		//enter the url on the browser
+		driver.get("https://rahulshettyacademy.com/AutomationPractice/");
+		
+		//identify the radio buttons
+		List<WebElement> radioBtns = driver.findElements(By.xpath("//input[@class='radioButton']"));
+		
+		int total = radioBtns.size();
+		
+		System.out.println(total);
+		
+		for(int i=0;i<total;i++)
+		{
+			String radioValue= radioBtns.get(i).getAttribute("value");
+			System.out.println(radioValue);
+		}
+		
+		driver.findElement(By.cssSelector("input[value='radio2']")).click();
+		
+		//dropdown
+		WebElement s1 = driver.findElement(By.xpath("//select[@id='dropdown-class-example']"));
+		Select dropdown = new Select(s1);
+		Thread.sleep(2000);
+		dropdown.selectByIndex(1);
+		Thread.sleep(2000);		
+		dropdown.selectByValue("option2");
+		Thread.sleep(2000);
+		dropdown.selectByVisibleText("Option3");
+		
+		//Autosuggest
+		WebElement auto = driver.findElement(By.xpath("//input[@id='autocomplete']"));
+		auto.click();
+		auto.sendKeys("India");
+		Thread.sleep(2000);
+		auto.sendKeys(Keys.ARROW_DOWN,Keys.ARROW_DOWN,Keys.ENTER);
+		Thread.sleep(2000);
+		//Alert handling
+		WebElement alert = driver.findElement(By.xpath("//input[@id='alertbtn']"));
+		alert.click();
+		driver.switchTo().alert().accept();
+			
+		closeBrowser();
+	}
+
+}
+----------MultiWindow-----------
+package SeleniumScripts;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import org.openqa.selenium.By;
+
+public class MultiWindow extends BaseClass{
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+
+		invokeBrowser();
+		driver.navigate().to("https://accounts.google.com/AddSession/signinchooser?hl=en&continue=https%3A%2F%2Fwww.google.com%2F&ec=GAlAmgQ&flowName=GlifWebSignIn&flowEntry=AddSession");
+		driver.findElement(By.linkText("Help")).click();
+		
+		//Iterator concept
+		Set<String> ids = driver.getWindowHandles();
+		Iterator<String> it = ids.iterator();
+		String parent = it.next();
+		System.out.println(driver.getTitle());
+		String child = it.next();
+		
+		//switch to child
+		driver.switchTo().window(child);
+		System.out.println(driver.getTitle());
+		Thread.sleep(3000);
+		//switch to parent
+		driver.switchTo().window(parent);
+		System.out.println(driver.getTitle());
+		Thread.sleep(3000);
+		driver.quit();
+	//	closeBrowser();
+	}
+
+}
+
+
+

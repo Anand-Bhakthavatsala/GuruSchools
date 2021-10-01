@@ -1,0 +1,73 @@
+
+-------------FrameDemo---------------
+package SeleniumScripts;
+
+import org.openqa.selenium.By;
+
+public class FrameDemo extends BaseClass{
+
+	public static void main(String[] args) throws InterruptedException {
+		// Frame demo
+		
+		invokeBrowser();
+		driver.get("file:///E:/Anand/Automation/html/iframpage.html");
+		//find text field id and enter the value
+		driver.findElement(By.id("t1")).sendKeys("Automation");
+		
+		//switch to frame
+		driver.switchTo().frame(0);
+		
+		Thread.sleep(2000);
+				
+		driver.findElement(By.id("t2")).sendKeys("Frame example");
+		
+		//switch back to parent
+		driver.switchTo().parentFrame();
+		Thread.sleep(2000);
+		driver.findElement(By.id("t1")).clear();
+		driver.findElement(By.id("t1")).sendKeys("Selenium learning");
+	}
+
+}
+-----------TableDemo-------------
+package SeleniumScripts;
+
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+public class TableDemo extends BaseClass{
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		invokeBrowser();
+		driver.get("http://demo.guru99.com/test/web-table-element.php");
+		
+		
+		//to identify the table header
+		WebElement header = driver.findElement(By.xpath("//div[@id='leftcontainer']/table[@class='dataTable']/thead/tr"));
+		System.out.println(header.getText());
+		
+		//identify all the table headers - 5 
+		List<WebElement> headerNames = driver.findElements(By.xpath("//div[@id='leftcontainer']/table[@class='dataTable']/thead/tr/th"));
+		System.out.println(headerNames.size());
+		
+		for(WebElement head:headerNames)
+		{
+			System.out.println(head.getText());			
+				
+		}
+		
+		//To print the single header 
+		WebElement singleheader = driver.findElement(By.xpath("//div[@id='leftcontainer']/table[@class='dataTable']/thead/tr/th[5]"));
+		singleheader.getText();
+		
+		//to capture the 3rd cell value of 10th record
+		WebElement cellValue = driver.findElement(By.xpath("//div[@id='leftcontainer']/table[@class='dataTable']/tbody/tr[10]/td[3]"));
+		System.out.println("The value of 3rd cell inside the 10th record "+cellValue.getText());
+		Thread.sleep(3000);
+		closeBrowser();
+	}
+
+}

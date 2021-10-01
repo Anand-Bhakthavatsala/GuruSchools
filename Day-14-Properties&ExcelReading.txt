@@ -1,0 +1,93 @@
+-------------OrangeHRMS using Properties file------------
+package SeleniumScripts;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
+import org.openqa.selenium.By;
+
+public class OrangeHRMS extends BaseClass {
+
+	public OrangeHRMS() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String args[]) throws IOException
+	{
+		//Retrieve data from properties file
+		FileInputStream fis = new FileInputStream("E:\\eclipse-workspace\\GuruSchools-Batch5\\data\\data.properties");
+		Properties prop = new Properties();
+		prop.load(fis);
+		String uname = prop.getProperty("username");
+		String pwd = prop.getProperty("password");
+		String url = prop.getProperty("baseurl");
+		
+		System.out.println(uname);
+		System.out.println(pwd);
+		
+		invokeBrowser();
+		
+		driver.get(url);//enter the url 
+		
+		driver.findElement(By.cssSelector("input[name='txtUsername']")).sendKeys(uname);
+		driver.findElement(By.xpath("//input[@name='txtPassword']")).sendKeys(pwd);
+		
+		driver.findElement(By.cssSelector("input[value='LOGIN']")).click();
+	}
+}
+---------------data.properties---------
+key=value
+username=Admin
+password=admin123
+browser=chrome
+baseurl=https://opensource-demo.orangehrmlive.com/index.php/auth/login
+
+--------mvn repository links to download for excel data --------
+https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml/4.1.2
+https://mvnrepository.com/artifact/org.apache.poi/poi/4.1.2
+-----------ExcelReader--------------
+package Batch5;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class ExcelReader {
+
+	
+	public static void main(String[] args) throws IOException {
+		
+		// To identify the excel file
+		FileInputStream fis = new FileInputStream("E:\\Anand\\Automation\\AutomationData.xlsx");
+		
+		//To identify the excel file and handle the sheets
+		XSSFWorkbook workbook = new XSSFWorkbook(fis);//AutomationData.xlsx file reference
+		XSSFSheet seleniumsheet = workbook.getSheetAt(0);//Selenium sheet which is 1st sheet in the work book
+		
+		//get the row and column
+		int rowcount = seleniumsheet.getPhysicalNumberOfRows();
+		int columncount = seleniumsheet.getRow(0).getPhysicalNumberOfCells();
+		
+		System.out.println("No of rows "+rowcount);
+		System.out.println("No of columns "+columncount);
+		
+		System.out.println(seleniumsheet.getRow(0).getCell(1).getStringCellValue());
+		//nested for loop
+		for(int i=0;i<rowcount;i++) //row
+		{
+			for(int j=0;j<columncount;j++) //column
+			{
+				String cellvalue = seleniumsheet.getRow(i).getCell(j).getStringCellValue();
+			//	System.out.print(cellvalue+"\t");
+			}
+			System.out.println();
+		}
+		
+	}
+
+}

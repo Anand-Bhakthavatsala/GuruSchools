@@ -1,0 +1,74 @@
+URL: https://login.salesforce.com/?locale=in
+
+Links 
+-----
+https://www.selenium.dev/selenium/docs/api/java/index.html?overview-summary.html
+https://github.com/mozilla/geckodriver/releases/tag/v0.29.1
+
+Script
+-------
+package SeleniumScripts;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class SalesForceLogin {
+
+	public static void main(String[] args) throws InterruptedException {
+		
+		String browser="firefox";
+		WebDriver driver=null;
+		
+		if(browser.equals("chrome")) //condition
+		{	
+			//Invoke the browser
+			System.setProperty("webdriver.chrome.driver", "C:\\drivers\\chromedriver_93\\chromedriver.exe");
+			driver = new ChromeDriver();//upcasting	
+		}
+		else if(browser.equals("firefox"))
+		{
+			System.setProperty("webdriver.gecko.driver", "C:\\drivers\\geckodriver-v0.29.0-win64\\geckodriver.exe");
+			driver = new FirefoxDriver();//upcasting
+		}		
+		//maximize the browser
+		driver.manage().window().maximize();
+
+		//wait
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+		//Enter the URL
+		driver.get("https://login.salesforce.com/?locale=in");
+
+		//Identify the elements
+		driver.findElement(By.cssSelector("#username")).sendKeys("Testuser");
+		driver.findElement(By.id("password")).sendKeys("test123");
+
+		//perform click
+		driver.findElement(By.name("Login")).click();
+
+		Thread.sleep(3000);//3 seconds sleep
+
+		//capture the error message
+		String error = driver.findElement(By.id("error")).getText();
+		System.out.println(error);
+
+		//validation
+		if(error.contains("Please check your username and password"))
+		{
+			System.out.println("Login is failed...Test case Failed");
+		}
+		else
+			System.out.println("Test case pass");
+
+		Thread.sleep(3000);
+		//close the browser
+		driver.close();
+
+	}
+
+}
+
